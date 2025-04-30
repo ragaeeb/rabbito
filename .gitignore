@@ -14,11 +14,9 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
-.env.*
 
-.parcel-cache
-dist
-coverage
+/dist
+/coverage
 .env*
 .flaskenv*
 !.env.project

@@ -9,7 +9,7 @@ export type FindBestDownloadUrlOptions = SpeedMeasurementOptions & {
     /** Maximum concurrent download tests */
     maxConcurrent?: number;
     /** Callback when a URL fails testing */
-    onUrlFailure?: (url: string, err: any) => void;
+    onUrlFailure?: (url: string, err: Error) => void;
     /** Number of retries for failed URLs */
     retries?: number;
     /** Delay between retries in milliseconds */

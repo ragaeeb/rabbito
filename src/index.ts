@@ -156,8 +156,9 @@ export const findBestDownloadUrl = async (urls: string[], options?: FindBestDown
         );
 
         return fastest.url;
-    } catch {
-        throw new Error('All speed tests failed');
+    } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        throw new Error(`All speed tests failed. Last error: ${msg}`);
     }
 };
 
