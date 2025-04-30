@@ -61,7 +61,7 @@ describe('index', () => {
             global.fetch = originalFetch;
             global.ReadableStream = originalReadableStream;
             global.AbortController = originalAbortController;
-            global.Performance = originalPerformance;
+            global.performance = originalPerformance;
             global.AbortSignal = originalAbortSignal;
         });
 
