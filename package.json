@@ -42,7 +42,6 @@
     },
     "scripts": {
         "build": "tsup",
-        "test": "bun test",
         "lint": "eslint .",
         "typecheck": "tsc --noEmit"
     },
