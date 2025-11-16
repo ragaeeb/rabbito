@@ -16,7 +16,6 @@
 ![Node & Bun](https://img.shields.io/badge/Works%20with-Node%20%26%20Bun-green)
 ![Maintenance](https://img.shields.io/maintenance/yes/2025)
 [![npm version](https://img.shields.io/npm/v/rabbito.svg)](https://www.npmjs.com/package/rabbito)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A tiny, high-performance library to find the fastest download URL from a set of URLs. Rabbito automatically tests download speeds from multiple sources, exposes granular progress callbacks, and includes lightweight health checks for mirrors.
 
