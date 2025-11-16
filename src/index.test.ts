@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest, type Mock } from 'bun:test';
 
-import { findBestDownloadUrl } from './index';
+import { checkUrlsHealth, findBestDownloadUrl } from './index';
 
 describe('index', () => {
     describe('findBestDownloadUrl', () => {
@@ -224,6 +224,74 @@ describe('index', () => {
             // Fetch should only be called for the HTTPS URL (index 1)
             expect(mockFetch).toHaveBeenCalledTimes(1);
             expect(mockFetch.mock.calls[0][0]).toBe(mixedUrls[1]);
+        });
+    });
+    describe('checkUrlsHealth', () => {
+        const originalFetch = global.fetch;
+
+        beforeEach(() => {
+            global.fetch = jest.fn() as any;
+        });
+
+        afterEach(() => {
+            global.fetch = originalFetch;
+            jest.useRealTimers();
+        });
+
+        it('returns health information for each reachable URL', async () => {
+            (global.fetch as Mock).mockImplementation((url: string) => {
+                if (url.includes('unhealthy')) {
+                    return Promise.resolve({ ok: false, status: 500 });
+                }
+
+                return Promise.resolve({ ok: true, status: 200 });
+            });
+
+            const results = await checkUrlsHealth([
+                'https://healthy.example.com/file.zip',
+                'https://unhealthy.example.com/file.zip',
+            ]);
+
+            expect(results).toEqual([
+                { error: undefined, healthy: true, url: 'https://healthy.example.com/file.zip' },
+                { error: 'HTTP 500', healthy: false, url: 'https://unhealthy.example.com/file.zip' },
+            ]);
+        });
+
+        it('omits invalid URLs when httpsOnly is enabled', async () => {
+            (global.fetch as Mock).mockResolvedValue({ ok: true, status: 200 });
+
+            const results = await checkUrlsHealth([
+                'http://insecure.example.com/file.zip',
+                'https://secure.example.com/file.zip',
+                'notaurl',
+            ], {
+                httpsOnly: true,
+            });
+
+            expect((global.fetch as Mock).mock.calls).toHaveLength(1);
+            expect((global.fetch as Mock).mock.calls[0][0]).toBe('https://secure.example.com/file.zip');
+            expect(results).toEqual([
+                { error: undefined, healthy: true, url: 'https://secure.example.com/file.zip' },
+            ]);
+        });
+
+        it('marks URLs unhealthy when the request times out', async () => {
+            (global.fetch as Mock).mockImplementation((_url: string, init: RequestInit) => {
+                return new Promise((_resolve, reject) => {
+                    init?.signal?.addEventListener('abort', () => {
+                        const abortError = new Error('aborted');
+                        (abortError as Error & { name: string }).name = 'AbortError';
+                        reject(abortError);
+                    });
+                });
+            });
+
+            const promise = checkUrlsHealth(['https://timeout.example.com/file.zip'], { timeoutMs: 1 });
+
+            await expect(promise).resolves.toEqual([
+                { error: 'aborted', healthy: false, url: 'https://timeout.example.com/file.zip' },
+            ]);
         });
     });
 });

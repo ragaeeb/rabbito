@@ -165,9 +165,11 @@ export const findBestDownloadUrl = async (urls: string[], options?: FindBestDown
 /**
  * Checks the health of multiple URLs without full speed testing.
  *
- * @param urls - URLs to check
- * @param options - Configuration options
- * @returns Promise with health status for each URL
+ * @param urls - URLs to check.
+ * @param options - Configuration options.
+ * @param options.httpsOnly - When true, skip any URL that is not HTTPS.
+ * @param options.timeoutMs - Abort the check if the HEAD request takes longer than this value.
+ * @returns Promise with health status for each URL that passed validation.
  */
 export const checkUrlsHealth = async (
     urls: string[],

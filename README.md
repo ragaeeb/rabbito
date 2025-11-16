@@ -18,7 +18,7 @@
 [![npm version](https://img.shields.io/npm/v/rabbito.svg)](https://www.npmjs.com/package/rabbito)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A tiny, high-performance library to find the fastest download URL from a set of URLs. Rabbito automatically tests download speeds from multiple sources and returns the best option.
+A tiny, high-performance library to find the fastest download URL from a set of URLs. Rabbito automatically tests download speeds from multiple sources, exposes granular progress callbacks, and includes lightweight health checks for mirrors.
 
 ## Features
 
@@ -26,6 +26,8 @@ A tiny, high-performance library to find the fastest download URL from a set of 
 - ⚡ **Race-based Testing**: Tests multiple URLs concurrently and returns the fastest
 - 🔄 **Smart Abortion**: Automatically cancels slower downloads once a faster one is found
 - 🔌 **Environment Agnostic**: Works in both Node.js and Bun runtimes
+- 🩺 **Mirror Health Checks**: Quickly validate mirror availability without downloading payloads
+- 📊 **Progress Insights**: Observe real-time download speed and byte counts during benchmarking
 
 ## Installation
 
@@ -164,7 +166,7 @@ Checks if URLs are accessible without performing a full speed test.
 
 - `urls`: An array of URLs to check
 - `options`: (Optional) Configuration options
-    - `timeoutMs`: Timeout for each URL check in milliseconds
+    - `timeoutMs`: Timeout for each URL check in milliseconds (the request is aborted when exceeded)
     - `httpsOnly`: Whether to only allow HTTPS URLs (default: false)
 
 **Returns:**
@@ -189,6 +191,22 @@ This approach minimizes bandwidth usage while efficiently finding the optimal do
 ## Requirements
 
 - Node.js >= 22.0.0 or Bun >= 1.2.11
+
+## Development
+
+```bash
+# Lint with Biome
+bun run lint
+
+# Format source files in-place
+bun run format
+
+# Build the distributable bundle with tsdown (Bun + TypeScript powered)
+bun run build
+
+# Execute the unit test suite
+bun test
+```
 
 ## License
 
